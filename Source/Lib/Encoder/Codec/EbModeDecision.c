@@ -6192,7 +6192,7 @@ void svt_init_mv_cost_params(MV_COST_PARAMS *mv_cost_params,
 
     mv_cost_params->ref_mv = ref_mv;
     mv_cost_params->full_ref_mv = get_fullmv_from_mv(ref_mv);
-    mv_cost_params->mv_cost_type = MV_COST_NONE;
+    mv_cost_params->mv_cost_type = MV_COST_ENTROPY;
     mv_cost_params->error_per_bit = AOMMAX(context_ptr->full_lambda_md[EB_8_BIT_MD] >> RD_EPB_SHIFT, 1);
     mv_cost_params->sad_per_bit = sad_per_bit16lut_8[base_q_idx];
     mv_cost_params->mvjcost = context_ptr->md_rate_estimation_ptr->nmv_vec_cost;

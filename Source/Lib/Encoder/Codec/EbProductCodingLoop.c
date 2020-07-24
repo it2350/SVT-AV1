@@ -13861,7 +13861,11 @@ void md_encode_block(PictureControlSet *pcs_ptr,
 #if ADAPTIVE_ME_SEARCH
     // Read MVPs (rounded-up to the closest integer) for use in md_sq_motion_search() and/or predictive_me_search() and/or perform_md_reference_pruning()
     if (pcs_ptr->slice_type != I_SLICE &&
+#if UPGRADE_SUBPEL
+    (context_ptr->md_sq_me_ctrls.enabled || context_ptr->predictive_me_level || context_ptr->ref_pruning_ctrls.inter_to_inter_pruning_enabled || context_ptr->ref_pruning_ctrls.intra_to_inter_pruning_enabled || context_ptr->md_subpel_search_ctrls.enabled))
+#else
        (context_ptr->md_sq_me_ctrls.enabled || context_ptr->predictive_me_level || context_ptr->ref_pruning_ctrls.inter_to_inter_pruning_enabled || context_ptr->ref_pruning_ctrls.intra_to_inter_pruning_enabled))
+#endif
         build_single_ref_mvp_array(pcs_ptr, context_ptr);
 #endif
     // Read and (if needed) perform 1/8 Pel ME MVs refinement
