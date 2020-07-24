@@ -628,8 +628,8 @@ extern "C" {
 #define PR_1359 1 //Valgrind fix
 
 #define UPGRADE_SUBPEL             0
-#define IFS_SWITCH_STAGE_1_STAGE_3 1
-#define TX_EARLY_EXIT              0
+#define IFS_SWITCH_STAGE_1_STAGE_3 0
+#define TX_EARLY_EXIT              1
 #endif
 // END  SVT_02_TEMP /////////////////////////////////////////////////////////
 
