@@ -35,6 +35,7 @@
 #include "mv.h"
 #include "mcomp.h"
 #include "av1me.h"
+#include "limits.h"
 #endif
 #if LOG_MV_VALIDITY
 void check_mv_validity(int16_t x_mv, int16_t y_mv, uint8_t need_shift);
