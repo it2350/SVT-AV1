@@ -5710,7 +5710,7 @@ void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_p
 
     ms_params->allow_hp = context_ptr->md_subpel_search_ctrls.eight_pel_search_enabled && pcs_ptr->parent_pcs_ptr->frm_hdr.allow_high_precision_mv;
     ms_params->forced_stop = EIGHTH_PEL;
-    ms_params->iters_per_step = 2; // Maximum number of steps in logarithmic subpel search before giving up.
+    ms_params->iters_per_step = context_ptr->md_subpel_search_ctrls.subpel_iters_per_step; // Maximum number of steps in logarithmic subpel search before giving up.
     ms_params->cost_list = NULL;
     // Derive mv_limits (TODO Hsan_Subpel should be derived under md_context @ eack block)
     // Set up limit values for MV components.

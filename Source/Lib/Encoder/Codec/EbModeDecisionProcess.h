@@ -354,7 +354,8 @@ typedef struct MdSqMotionSearchCtrls {
 #if UPGRADE_SUBPEL
 typedef struct MdSubPelSearchCtrls {
     uint8_t enabled;                             // 0: subpel search @ MD OFF; 1: subpel search @ MD ON
-    SUBPEL_SEARCH_TYPE subpel_search_type;       // USE_8_TAPS | USE_4_TAPS | USE_2_TAPS | USE_2_TAPS_ORIG (not supported)
+    SUBPEL_SEARCH_TYPE subpel_search_type;       // USE_8_TAPS | USE_4_TAPS | USE_2_TAPS | USE_2_TAPS_ORIG (not supported)      
+    int subpel_iters_per_step;                   // Maximum number of steps in logarithmic subpel search before giving up.
     uint8_t do_4x4;                              // 0: do not perform search for 4x4 and inherit Parent MV; 1: perform search for SQ
     uint8_t do_nsq;                              // 0: do not perform search for NSQ and inherit SQ MV if NSQ Full Pel search not performed; 1: perform search for NSQ
     uint8_t half_pel_search_enabled;             // 0: OFF; 1: ON

@@ -1997,8 +1997,8 @@ void md_subpel_search_controls(ModeDecisionContext *mdctxt, uint8_t md_subpel_se
     case 0: md_subpel_search_ctrls->enabled = 0; break;
     case 1:
         md_subpel_search_ctrls->enabled = 1;
-        md_subpel_search_ctrls->subpel_search_type = USE_4_TAPS;
-
+        md_subpel_search_ctrls->subpel_search_type = USE_8_TAPS;
+        md_subpel_search_ctrls->subpel_iters_per_step = 4;
         md_subpel_search_ctrls->do_4x4 = 1;
         md_subpel_search_ctrls->do_nsq = 1;
 
@@ -2009,7 +2009,33 @@ void md_subpel_search_controls(ModeDecisionContext *mdctxt, uint8_t md_subpel_se
         break;
     case 2:
         md_subpel_search_ctrls->enabled = 1;
+        md_subpel_search_ctrls->subpel_search_type = USE_8_TAPS;
+        md_subpel_search_ctrls->subpel_iters_per_step = 2;
+        md_subpel_search_ctrls->do_4x4 = 1;
+        md_subpel_search_ctrls->do_nsq = 1;
+
+        md_subpel_search_ctrls->half_pel_search_enabled = 1;
+        md_subpel_search_ctrls->quarter_pel_search_enabled = 1;
+        md_subpel_search_ctrls->eight_pel_search_enabled = 1;
+        md_subpel_search_ctrls->sub_search_pos_cnt = 1;
+        break;
+    case 3:
+        md_subpel_search_ctrls->enabled = 1;
         md_subpel_search_ctrls->subpel_search_type = USE_4_TAPS;
+        md_subpel_search_ctrls->subpel_iters_per_step = 2;
+
+        md_subpel_search_ctrls->do_4x4 = 1;
+        md_subpel_search_ctrls->do_nsq = 1;
+
+        md_subpel_search_ctrls->half_pel_search_enabled = 1;
+        md_subpel_search_ctrls->quarter_pel_search_enabled = 1;
+        md_subpel_search_ctrls->eight_pel_search_enabled = 0;
+        md_subpel_search_ctrls->sub_search_pos_cnt = 1;
+        break;
+    case 4:
+        md_subpel_search_ctrls->enabled = 1;
+        md_subpel_search_ctrls->subpel_search_type = USE_4_TAPS;
+        md_subpel_search_ctrls->subpel_iters_per_step = 1;
 
         md_subpel_search_ctrls->do_4x4 = 1;
         md_subpel_search_ctrls->do_nsq = 1;
@@ -6730,11 +6756,11 @@ EbErrorType signal_derivation_enc_dec_kernel_oq(
 #if PERFORM_SUB_PEL_MD
 #if UPGRADE_SUBPEL
     if (pd_pass == PD_PASS_0)
-        context_ptr->md_subpel_search_level = 1;
+        context_ptr->md_subpel_search_level = 3;
     else if (pd_pass == PD_PASS_1)
-        context_ptr->md_subpel_search_level = 1;
+        context_ptr->md_subpel_search_level = 3;
     else
-        context_ptr->md_subpel_search_level = 1;
+        context_ptr->md_subpel_search_level = 3;
 
     md_subpel_search_controls(context_ptr, context_ptr->md_subpel_search_level);
 #else
