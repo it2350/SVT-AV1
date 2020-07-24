@@ -5683,13 +5683,14 @@ void md_sq_motion_search(PictureControlSet *pcs, ModeDecisionContext *ctx,
 #endif
 
 #if UPGRADE_SUBPEL
+void svt_init_mv_cost_params(MV_COST_PARAMS *mv_cost_params, ModeDecisionContext *context_ptr, const MV *ref_mv, uint8_t base_q_idx);
 AomVarianceFnPtr mefn_ptr[BlockSizeS_ALL];
 void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_ptr,
     EbPictureBufferDesc *input_picture_ptr, uint32_t input_origin_index,
     uint8_t list_idx, uint8_t ref_idx, int16_t *me_mv_x, int16_t *me_mv_y, int16_t ref_mv_x, int16_t ref_mv_y) {
 
     FrameHeader *frm_hdr = &pcs_ptr->parent_pcs_ptr->frm_hdr;
-    uint32_t full_lambda =  context_ptr->full_lambda_md[EB_8_BIT_MD];
+
     const Av1Common *const cm = pcs_ptr->parent_pcs_ptr->av1_cm;
     MacroBlockD *xd = context_ptr->blk_ptr->av1xd;
 

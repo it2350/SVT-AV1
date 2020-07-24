@@ -2463,7 +2463,7 @@ static INLINE MV get_best_diag_step(int step_size, unsigned int left_cost,
 // search in the best quadrant. This uses bilinear filter to speed up the
 // calculation.
 static AOM_FORCE_INLINE MV first_level_check_fast(
-    MacroBlockD *xd, const Av1Common *const cm, const MV this_mv, MV *best_mv,
+    MacroBlockD *xd, const struct AV1Common *const cm, const MV this_mv, MV *best_mv,
     int hstep, const SubpelMvLimits *mv_limits,
     const SUBPEL_SEARCH_VAR_PARAMS *var_params,
     const MV_COST_PARAMS *mv_cost_params, unsigned int *besterr,
@@ -2505,7 +2505,7 @@ static AOM_FORCE_INLINE MV first_level_check_fast(
 // Performs a following up search after first_level_check_fast is called. This
 // performs two extra chess pattern searches in the best quadrant.
 static AOM_FORCE_INLINE void second_level_check_fast(
-    MacroBlockD *xd, const Av1Common *cm, const MV this_mv, const MV diag_step,
+    MacroBlockD *xd, const struct AV1Common *const cm, const MV this_mv, const MV diag_step,
     MV *best_mv, int hstep, const SubpelMvLimits *mv_limits,
     const SUBPEL_SEARCH_VAR_PARAMS *var_params,
     const MV_COST_PARAMS *mv_cost_params, unsigned int *besterr,
@@ -2570,7 +2570,7 @@ static AOM_FORCE_INLINE void second_level_check_fast(
 // searches the four cardinal directions, and perform several
 // diagonal/chess-pattern searches in the best quadrant.
 static AOM_FORCE_INLINE void two_level_checks_fast(
-    MacroBlockD *xd, const Av1Common *cm, const MV this_mv, MV *best_mv,
+    MacroBlockD *xd, const struct AV1Common *const cm, const MV this_mv, MV *best_mv,
     int hstep, const SubpelMvLimits *mv_limits,
     const SUBPEL_SEARCH_VAR_PARAMS *var_params,
     const MV_COST_PARAMS *mv_cost_params, unsigned int *besterr,
@@ -2788,7 +2788,7 @@ static INLINE int check_repeated_mv_and_update(int_mv *last_mv_search_list,
 }
 
 static AOM_INLINE int setup_center_error_facade(
-    MacroBlockD *xd, const Av1Common *cm, const MV *bestmv,
+    MacroBlockD *xd, const struct AV1Common *const cm, const MV *bestmv,
     const SUBPEL_SEARCH_VAR_PARAMS *var_params,
     const MV_COST_PARAMS *mv_cost_params, unsigned int *sse1, int *distortion,
     int is_scaled) {
@@ -2800,7 +2800,7 @@ static AOM_INLINE int setup_center_error_facade(
                               distortion);
   }
 }
-
+#if 0
 int av1_find_best_sub_pixel_tree_pruned_evenmore(
     MacroBlockD *xd, const struct AV1Common *const cm,
     const SUBPEL_MOTION_SEARCH_PARAMS *ms_params, MV start_mv, MV *bestmv,
@@ -2975,7 +2975,7 @@ int av1_find_best_sub_pixel_tree_pruned_more(
 
   return besterr;
 }
-
+#endif
 int av1_find_best_sub_pixel_tree_pruned(
     MacroBlockD *xd, const struct AV1Common *const cm,
     const SUBPEL_MOTION_SEARCH_PARAMS *ms_params, MV start_mv, MV *bestmv,
