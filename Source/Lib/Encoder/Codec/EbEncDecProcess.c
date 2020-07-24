@@ -2005,7 +2005,11 @@ void md_subpel_search_controls(ModeDecisionContext *mdctxt, uint8_t md_subpel_se
         md_subpel_search_ctrls->half_pel_search_enabled  = 1;
         md_subpel_search_ctrls->quarter_pel_search_enabled = 1;
         md_subpel_search_ctrls->eight_pel_search_enabled = 1;
-        md_subpel_search_ctrls->sub_search_pos_cnt = 1 ;
+#if MULTIPLE_FP_POINT
+        md_subpel_search_ctrls->sub_search_pos_cnt = 2;
+#else
+        md_subpel_search_ctrls->sub_search_pos_cnt = 1;
+#endif
         break;
     case 2:
         md_subpel_search_ctrls->enabled = 1;
@@ -2017,7 +2021,11 @@ void md_subpel_search_controls(ModeDecisionContext *mdctxt, uint8_t md_subpel_se
         md_subpel_search_ctrls->half_pel_search_enabled = 1;
         md_subpel_search_ctrls->quarter_pel_search_enabled = 1;
         md_subpel_search_ctrls->eight_pel_search_enabled = 1;
+#if MULTIPLE_FP_POINT
+        md_subpel_search_ctrls->sub_search_pos_cnt = 2;
+#else
         md_subpel_search_ctrls->sub_search_pos_cnt = 1;
+#endif
         break;
     case 3:
         md_subpel_search_ctrls->enabled = 1;
