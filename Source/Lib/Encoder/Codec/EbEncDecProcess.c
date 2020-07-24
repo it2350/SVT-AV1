@@ -6764,11 +6764,11 @@ EbErrorType signal_derivation_enc_dec_kernel_oq(
 #if PERFORM_SUB_PEL_MD
 #if UPGRADE_SUBPEL
     if (pd_pass == PD_PASS_0)
-        context_ptr->md_subpel_search_level = 3;
+        context_ptr->md_subpel_search_level = 4;
     else if (pd_pass == PD_PASS_1)
-        context_ptr->md_subpel_search_level = 3;
+        context_ptr->md_subpel_search_level = 4;
     else
-        context_ptr->md_subpel_search_level = 3;
+        context_ptr->md_subpel_search_level = 4;
 
     md_subpel_search_controls(context_ptr, context_ptr->md_subpel_search_level);
 #else
