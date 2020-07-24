@@ -4800,7 +4800,7 @@ void md_full_pel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context
     }
 #endif
 }
-#if !PRED_ME_SUBPEL
+#if !UPGRADE_SUBPEL
 #if ADD_MD_NSQ_SEARCH
 // HPs are the 8 performed positions when search area is 3x3, search_step is 4 (1/2 Pel search), search_pattern is 0 (H,V,D), search_central_position is 0
 // XX.......HP.......HP.......HP.......XX
@@ -6939,7 +6939,7 @@ void build_single_ref_mvp_array(PictureControlSet *pcs, ModeDecisionContext *ctx
 #if PRUNING_PER_INTER_TYPE
 EbBool is_valid_unipred_ref(struct ModeDecisionContext *context_ptr, uint8_t inter_cand_group, uint8_t list_idx, uint8_t ref_idx);
 #endif
-#if PRED_ME_SUBPEL
+#if UPGRADE_SUBPEL
 void predictive_me_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_ptr,
     EbPictureBufferDesc *input_picture_ptr, uint32_t input_origin_index) {
 #else
@@ -7267,7 +7267,7 @@ void    predictive_me_search(PictureControlSet *pcs_ptr, ModeDecisionContext *co
                                    &best_search_mvy,
                                    &best_search_distortion);
 
-#if PRED_ME_SUBPEL
+#if UPGRADE_SUBPEL
                 md_subpel_search(pcs_ptr,
                     context_ptr,
                     input_picture_ptr,
@@ -10572,6 +10572,10 @@ void perform_tx_partitioning(ModeDecisionCandidateBuffer *candidate_buffer,
         if (pcs_ptr->parent_pcs_ptr->tx_size_early_exit) {
             if (!is_best_has_coeff) continue;
         }
+#if TX_EARLY_EXIT
+        if (context_ptr->source_variance < 256 && context_ptr->tx_depth == 2 && best_tx_depth == 0)
+            continue;
+#endif
         tx_reset_neighbor_arrays(pcs_ptr, context_ptr, is_inter, context_ptr->tx_depth);
         ModeDecisionCandidateBuffer *tx_candidate_buffer =
             (context_ptr->tx_depth == 0)
@@ -11486,11 +11490,15 @@ void md_stage_1(PictureControlSet *pcs_ptr, SuperBlock *sb_ptr, BlkStruct *blk_p
         candidate_ptr->txs_level = 0;
 #endif
 #if REFACTOR_SIGNALS
+#if IFS_SWITCH_STAGE_1_STAGE_3
+        context_ptr->md_staging_perform_inter_pred = EB_FALSE;
+#else
         context_ptr->md_staging_perform_inter_pred = EB_TRUE;
+#endif
 #else
         context_ptr->md_staging_skip_full_pred            = EB_FALSE;
 #endif
-#if IFS_MD_STAGE_3 && !IFS_MD_STAGE_1
+#if IFS_MD_STAGE_3 && !IFS_MD_STAGE_1 || IFS_SWITCH_STAGE_1_STAGE_3
         context_ptr->md_staging_skip_interpolation_search = EB_TRUE;
 #else
         context_ptr->md_staging_skip_interpolation_search = EB_FALSE;
@@ -11762,7 +11770,7 @@ void md_stage_3(PictureControlSet *pcs_ptr, SuperBlock *sb_ptr, BlkStruct *blk_p
 #else
         context_ptr->md_staging_skip_full_pred = context_ptr->md_staging_mode == MD_STAGING_MODE_0;
 #endif
-#if IFS_MD_STAGE_3 && !IFS_MD_STAGE_1
+#if IFS_MD_STAGE_3 && !IFS_MD_STAGE_1 || IFS_SWITCH_STAGE_1_STAGE_3
         context_ptr->md_staging_skip_interpolation_search = EB_FALSE;
 #else
         context_ptr->md_staging_skip_interpolation_search =
@@ -13837,7 +13845,7 @@ void md_encode_block(PictureControlSet *pcs_ptr,
         pcs_ptr, context_ptr, input_picture_ptr, blk_origin_index);
 #endif
     // Perform ME search around the best MVP
-#if PRED_ME_SUBPEL
+#if UPGRADE_SUBPEL
     if (context_ptr->predictive_me_level)
         predictive_me_search(
             pcs_ptr, context_ptr, input_picture_ptr, input_origin_index);

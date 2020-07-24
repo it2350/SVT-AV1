@@ -20,6 +20,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#if UPGRADE_SUBPEL
 #if 0
 // The maximum number of steps in a step search given the largest
 // allowed initial step
@@ -369,5 +370,5 @@ static INLINE int av1_is_subpelmv_in_range(const SubpelMvLimits *mv_limits,
 #ifdef __cplusplus
 }  // extern "C"
 #endif
-
+#endif
 #endif  // AOM_AV1_ENCODER_MCOMP_H_

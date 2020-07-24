@@ -20,7 +20,7 @@
 #include "EbBlockStructures.h"
 #include "av1me.h"
 #include "aom_dsp_rtcd.h"
-
+#if UPGRADE_SUBPEL
 // ============================================================================
 //  Cost of motion vectors
 // ============================================================================
@@ -3765,4 +3765,5 @@ int av1_get_mvpred_compound_var(const MV_COST_PARAMS *mv_cost_params,
                              pre);
   }
 }
+#endif
 #endif
