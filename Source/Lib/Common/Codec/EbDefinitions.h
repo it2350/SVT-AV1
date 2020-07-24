@@ -631,6 +631,7 @@ extern "C" {
 #if UPGRADE_SUBPEL
 #define UNIFY_HP_QP_INDEX_TH       1
 #define MULTIPLE_FP_POINT          0 
+#define UPGRADE_PRED_ME            1
 #endif
 #define IFS_SWITCH_STAGE_1_STAGE_3 0
 #define TX_EARLY_EXIT              0

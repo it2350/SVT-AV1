@@ -5686,7 +5686,8 @@ void md_sq_motion_search(PictureControlSet *pcs, ModeDecisionContext *ctx,
 #if UPGRADE_SUBPEL
 void svt_init_mv_cost_params(MV_COST_PARAMS *mv_cost_params, ModeDecisionContext *context_ptr, const MV *ref_mv, uint8_t base_q_idx);
 AomVarianceFnPtr mefn_ptr[BlockSizeS_ALL];
-void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_ptr,
+
+int md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_ptr,
     EbPictureBufferDesc *input_picture_ptr, uint32_t input_origin_index,
     uint8_t list_idx, uint8_t ref_idx, int16_t *me_mv_x, int16_t *me_mv_y, int16_t ref_mv_x, int16_t ref_mv_y) {
 
@@ -5820,13 +5821,15 @@ void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_p
 
     int not_used = 0;
     MV subpel_start_mv = get_mv_from_fullmv(&best_mv.as_fullmv);
-    av1_find_best_sub_pixel_tree(
+    int besterr = av1_find_best_sub_pixel_tree(
         xd, (const struct AV1Common *const) cm, ms_params, subpel_start_mv, &best_mv.as_mv, &not_used,
         &context_ptr->pred_sse[svt_get_ref_frame_type(list_idx, ref_idx)],
         NULL);
 
     *me_mv_x = best_mv.as_mv.col;
     *me_mv_y = best_mv.as_mv.row;
+
+    return besterr;
 #endif
 }
 #else
@@ -7318,7 +7321,7 @@ void    predictive_me_search(PictureControlSet *pcs_ptr, ModeDecisionContext *co
                                    &best_search_distortion);
 
 #if UPGRADE_SUBPEL
-                md_subpel_search(pcs_ptr,
+                int besterr = md_subpel_search(pcs_ptr,
                     context_ptr,
                     input_picture_ptr,
                     input_origin_index,
@@ -7532,7 +7535,11 @@ void    predictive_me_search(PictureControlSet *pcs_ptr, ModeDecisionContext *co
 
 
 #if PME_SORT_REF
+#if UPGRADE_PRED_ME
+                context_ptr->pme_res[list_idx][ref_idx].dist = (uint32_t) besterr;
+#else
                 context_ptr->pme_res[list_idx][ref_idx].dist = best_search_distortion;
+#endif
 #endif
             }
         }
