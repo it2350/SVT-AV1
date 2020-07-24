@@ -2687,9 +2687,12 @@ static unsigned int setup_center_error(
     const SUBPEL_SEARCH_VAR_PARAMS *var_params,
     const MV_COST_PARAMS *mv_cost_params, unsigned int *sse1, int *distortion) {
   const AomVarianceFnPtr *vfp = var_params->vfp;
+#if 1
+  (void) xd;
+#else
   const int w = var_params->w;
   const int h = var_params->h;
-
+#endif
   const MSBuffers *ms_buffers = &var_params->ms_buffers;
   const uint8_t *src = ms_buffers->src->buf;
   const uint8_t *y = get_buf_from_mv(ms_buffers->ref, *bestmv);
