@@ -5818,6 +5818,7 @@ void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_p
     best_mv.as_mv.col = *me_mv_x >> 3;
     best_mv.as_mv.row = *me_mv_y >> 3;
 
+    int not_used = 0;
     MV subpel_start_mv = get_mv_from_fullmv(&best_mv.as_fullmv);
     av1_find_best_sub_pixel_tree(
         xd, (const struct AV1Common *const) cm, ms_params, subpel_start_mv, &best_mv.as_mv, &not_used,
