@@ -629,6 +629,7 @@ extern "C" {
 
 #define UPGRADE_SUBPEL             1
 #if UPGRADE_SUBPEL
+#define UNIFY_HP_QP_INDEX_TH       1
 #define MULTIPLE_FP_POINT          0 
 #endif
 #define IFS_SWITCH_STAGE_1_STAGE_3 0
@@ -661,7 +662,12 @@ extern "C" {
 #endif
 #endif
 #define ALT_REF_QP_THRESH 20
+#if UNIFY_HP_QP_INDEX_TH
+// Q threshold for high precision mv.
+#define HIGH_PRECISION_MV_QTHRESH 128
+#else
 #define HIGH_PRECISION_MV_QTHRESH 150
+#endif
 #define NON8_FIX_REST 1
 
 #define ENHANCED_MULTI_PASS_PD_MD_STAGING_SETTINGS 1 // Updated Multi-Pass-PD and MD-Staging Settings
