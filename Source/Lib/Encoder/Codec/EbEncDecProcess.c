@@ -1997,6 +1997,7 @@ void md_subpel_search_controls(ModeDecisionContext *mdctxt, uint8_t md_subpel_se
     case 0: md_subpel_search_ctrls->enabled = 0; break;
     case 1:
         md_subpel_search_ctrls->enabled = 1;
+        md_subpel_search_ctrls->subpel_search_type = USE_4_TAPS;
 
         md_subpel_search_ctrls->do_4x4 = 1;
         md_subpel_search_ctrls->do_nsq = 1;
@@ -2008,6 +2009,7 @@ void md_subpel_search_controls(ModeDecisionContext *mdctxt, uint8_t md_subpel_se
         break;
     case 2:
         md_subpel_search_ctrls->enabled = 1;
+        md_subpel_search_ctrls->subpel_search_type = USE_4_TAPS;
 
         md_subpel_search_ctrls->do_4x4 = 1;
         md_subpel_search_ctrls->do_nsq = 1;

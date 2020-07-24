@@ -5732,7 +5732,7 @@ void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_p
 
     // Subpel variance params
     ms_params->var_params.vfp = &mefn_ptr[context_ptr->blk_geom->bsize];
-    ms_params->var_params.subpel_search_type = USE_8_TAPS;
+    ms_params->var_params.subpel_search_type = context_ptr->md_subpel_search_ctrls.subpel_search_type;
     ms_params->var_params.w = block_size_wide[context_ptr->blk_geom->bsize];
     ms_params->var_params.h = block_size_high[context_ptr->blk_geom->bsize];
 
