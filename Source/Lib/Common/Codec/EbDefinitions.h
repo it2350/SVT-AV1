@@ -626,6 +626,12 @@ extern "C" {
 
 #define PR_1349 1 //Port fixes for SIMD kernels from AOM
 #define PR_1359 1 //Valgrind fix
+
+#define UPGRADE_SUBPEL            1
+#define PRED_ME_REFACTOR          1
+#if PRED_ME_REFACTOR
+#define PRED_ME_SUBPEL            1 
+#endif
 #endif
 // END  SVT_02_TEMP /////////////////////////////////////////////////////////
 
