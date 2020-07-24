@@ -628,6 +628,9 @@ extern "C" {
 #define PR_1359 1 //Valgrind fix
 
 #define UPGRADE_SUBPEL             1
+#if UPGRADE_SUBPEL
+#define MULTIPLE_FP_POINT          0 
+#endif
 #define IFS_SWITCH_STAGE_1_STAGE_3 0
 #define TX_EARLY_EXIT              0
 #endif

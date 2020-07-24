@@ -5696,9 +5696,6 @@ void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_p
 
     int not_used = 0;
 
-    int_mv best_mv;
-    best_mv.as_mv.col = *me_mv_x >> 3;
-    best_mv.as_mv.row = *me_mv_y >> 3;
     // ref_mv is used to calculate the cost of the motion vector
     MV ref_mv;
     ref_mv.col = ref_mv_x;
@@ -5769,15 +5766,55 @@ void md_subpel_search(PictureControlSet *pcs_ptr, ModeDecisionContext *context_p
     ms_buffers->wsrc = NULL;
     ms_buffers->obmc_mask = NULL;
 
+    int besterr_mlt_pt = INT_MAX;
+    int besterr;
+#if MULTIPLE_FP_POINT
+    // Derive valid_fp_pos_cnt
+    uint8_t best_mv_idx = 0;
+    while (best_mv_idx < MD_MOTION_SEARCH_MAX_BEST_MV && context_ptr->md_motion_search_best_mv[best_mv_idx].dist != (uint32_t)~0) {
+        best_mv_idx++;
+    }
+    uint8_t valid_fp_pos_cnt = best_mv_idx;
+    // Sort md_motion_search_best_mv
+    if (valid_fp_pos_cnt == 0) { // Full-Pel search not performed @ MD (if SQ or if NSQ search @ MD skipped)
+        context_ptr->md_motion_search_best_mv[0].mvx = *me_mv_x;
+        context_ptr->md_motion_search_best_mv[0].mvy = *me_mv_y;
+        valid_fp_pos_cnt = 1;
+    }
+    else {  // Sort md_fp_res_array
+        MdMotionSearchResults *md_motion_search_best_mv_p = &(context_ptr->md_motion_search_best_mv[0]);
+        for (uint16_t i = 0; i < valid_fp_pos_cnt - 1; ++i) {
+            for (uint16_t j = i + 1; j < valid_fp_pos_cnt; ++j) {
+                if (context_ptr->md_motion_search_best_mv[j].dist < context_ptr->md_motion_search_best_mv[i].dist) {
+                    MdMotionSearchResults temp = md_motion_search_best_mv_p[i];
+                    md_motion_search_best_mv_p[i] = md_motion_search_best_mv_p[j];
+                    md_motion_search_best_mv_p[j] = temp;
+                }
+            }
+        }
+    }
 
-    MV subpel_start_mv = get_mv_from_fullmv(&best_mv.as_fullmv);
-    av1_find_best_sub_pixel_tree(
-        xd, (const struct AV1Common *const) cm, ms_params, subpel_start_mv, &best_mv.as_mv, &not_used,
-        &context_ptr->pred_sse[svt_get_ref_frame_type(list_idx, ref_idx)],
-        NULL);
+    for (uint8_t best_mv_idx = 0; best_mv_idx < MIN(context_ptr->md_subpel_search_ctrls.sub_search_pos_cnt, valid_fp_pos_cnt); best_mv_idx++) {
+#endif
 
-    *me_mv_x = best_mv.as_mv.col;
-    *me_mv_y = best_mv.as_mv.row;
+        int_mv best_mv;
+        best_mv.as_mv.col = *me_mv_x >> 3;
+        best_mv.as_mv.row = *me_mv_y >> 3;
+
+        MV subpel_start_mv = get_mv_from_fullmv(&best_mv.as_fullmv);
+        besterr = av1_find_best_sub_pixel_tree(
+            xd, (const struct AV1Common *const) cm, ms_params, subpel_start_mv, &best_mv.as_mv, &not_used,
+            &context_ptr->pred_sse[svt_get_ref_frame_type(list_idx, ref_idx)],
+            NULL);
+
+        if (besterr < besterr_mlt_pt) {
+            besterr_mlt_pt = besterr;
+            *me_mv_x = best_mv.as_mv.col;
+            *me_mv_y = best_mv.as_mv.row;
+        }
+#if MULTIPLE_FP_POINT
+    }
+#endif
 }
 #else
 #if PERFORM_SUB_PEL_MD
