@@ -4807,26 +4807,21 @@ void inject_predictive_me_candidates(
 
                     uint8_t inter_type;
                     uint8_t is_ii_allowed =
-#if INTRA_COMPOUND_OPT
                         svt_is_interintra_allowed(context_ptr->md_enable_inter_intra == 1, bsize, NEWMV, rf);
-#else
-                        0; // svt_is_interintra_allowed(pcs_ptr->parent_pcs_ptr->enable_inter_intra, bsize, NEWMV, rf);
-#endif
-#if INTRA_COMPOUND_OPT
+
                     if (context_ptr->md_enable_inter_intra > 2)
                         if (is_reference_best_pme(context_ptr, list_idx, ref_idx, 1) == 0)
                             is_ii_allowed = 0;
-#endif
                     uint8_t tot_inter_types = is_ii_allowed ? II_COUNT : 1;
                     uint8_t is_obmc_allowed =
                         obmc_motion_mode_allowed(
                             pcs_ptr, context_ptr, bsize, rf[0], rf[1], NEWMV) == OBMC_CAUSAL;
-#if OBMC_FAST
+
                     if (context_ptr->obmc_ctrls.pme_best_ref)
                         if (context_ptr->pme_res[0][0].list_i != list_idx ||
                             context_ptr->pme_res[0][0].ref_i != ref_idx)
                             is_obmc_allowed = 0;
-#endif
+
                     tot_inter_types = is_obmc_allowed ? tot_inter_types + 1 : tot_inter_types;
                     for (inter_type = 0; inter_type < tot_inter_types; inter_type++) {
                         cand_array[cand_total_cnt].type = INTER_MODE;
@@ -4840,9 +4835,6 @@ void inject_predictive_me_candidates(
                         cand_array[cand_total_cnt].is_compound = 0;
                         cand_array[cand_total_cnt].is_interintra_used = 0;
                         cand_array[cand_total_cnt].is_new_mv = 1;
-#if !CLEAN_UP_SB_DATA_7
-                        cand_array[cand_total_cnt].is_zero_mv = 0;
-#endif
                         cand_array[cand_total_cnt].drl_index = 0;
                         if (list_idx == 0) {
                             cand_array[cand_total_cnt].motion_vector_xl0 = to_inject_mv_x;
@@ -4867,9 +4859,6 @@ void inject_predictive_me_candidates(
                             ++context_ptr->injected_mv_count_l1;
                         }
                         cand_array[cand_total_cnt].ref_mv_index = 0;
-#if !CLEAN_UP_SB_DATA_7
-                        cand_array[cand_total_cnt].pred_mv_weight = 0;
-#endif
                         cand_array[cand_total_cnt].ref_frame_type = frame_type;
                         cand_array[cand_total_cnt].ref_frame_index_l0 = (list_idx == 0) ? ref_idx : -1;
                         cand_array[cand_total_cnt].ref_frame_index_l1 = (list_idx == 1) ? ref_idx : -1;
@@ -4942,28 +4931,18 @@ void inject_predictive_me_candidates(
                         to_inject_mv_x_l1,
                         to_inject_mv_y_l1,
                         to_inject_ref_type) == EB_FALSE) {
-#if !INTER_COMP_REDESIGN
-                    context_ptr->variance_ready = 0;
-#endif
-#if INTER_COMP_REDESIGN
+
                     if (context_ptr->inter_comp_ctrls.mrp_pruning_w_distortion)
                         if (is_reference_best_pme(context_ptr, 0, ref_idx_0, 2) == 0 ||
                             is_reference_best_pme(context_ptr, 1, ref_idx_1, 2) == 0)
                             tot_comp_types = MD_COMP_AVG;
-#endif
+
                     for (cur_type = MD_COMP_AVG; cur_type <= tot_comp_types; cur_type++) {
-#if !INTER_COMP_REDESIGN
-                        if (context_ptr->comp_mrp_dist_mode)
-                            if (ref_idx_0 > MAX_REF_DISTANCE_COMPOUND - 1 &&
-                                ref_idx_1 > MAX_REF_DISTANCE_COMPOUND - 1)
-                                if (cur_type > MD_COMP_DIST) continue;
-#endif
+
                         // If two predictors are very similar, skip wedge compound mode search
-#if INTER_COMP_REDESIGN
+
                         if (cur_type == MD_COMP_WEDGE && context_ptr->inter_comp_ctrls.similar_predictions)
-#else
-                        if (context_ptr->variance_ready)
-#endif
+
                             if (context_ptr->prediction_mse < 8 ||
                                 (!have_newmv_in_inter_mode(NEW_NEWMV) &&
                                     context_ptr->prediction_mse < 64))
@@ -4974,9 +4953,6 @@ void inject_predictive_me_candidates(
                         cand_array[cand_total_cnt].use_intrabc = 0;
                         cand_array[cand_total_cnt].merge_flag = EB_FALSE;
                         cand_array[cand_total_cnt].is_new_mv = 1;
-#if !CLEAN_UP_SB_DATA_7
-                        cand_array[cand_total_cnt].is_zero_mv = 0;
-#endif
                         cand_array[cand_total_cnt].drl_index = 0;
                         // Set the MV to ME result
                         cand_array[cand_total_cnt].motion_vector_xl0 = to_inject_mv_x_l0;
@@ -4985,9 +4961,6 @@ void inject_predictive_me_candidates(
                         cand_array[cand_total_cnt].motion_vector_yl1 = to_inject_mv_y_l1;
                         // will be needed later by the rate estimation
                         cand_array[cand_total_cnt].ref_mv_index = 0;
-#if !CLEAN_UP_SB_DATA_7
-                        cand_array[cand_total_cnt].pred_mv_weight = 0;
-#endif
                         cand_array[cand_total_cnt].inter_mode = NEW_NEWMV;
                         cand_array[cand_total_cnt].pred_mode = NEW_NEWMV;
                         cand_array[cand_total_cnt].motion_mode = SIMPLE_TRANSLATION;
@@ -5029,7 +5002,6 @@ void inject_predictive_me_candidates(
                             best_pred_mv[1].as_mv.row;
 
                         //MVP REFINE
-#if INTER_COMP_REDESIGN
                         if (cur_type == MD_COMP_AVG && tot_comp_types > MD_COMP_AVG)
                             calc_pred_masked_compound(
                                 pcs_ptr, context_ptr, &cand_array[cand_total_cnt]);
@@ -5040,7 +5012,6 @@ void inject_predictive_me_candidates(
                                 context_ptr->inter_comp_ctrls.similar_predictions_th)
                                 continue;
 
-#endif
                         determine_compound_mode(
                             pcs_ptr, context_ptr, &cand_array[cand_total_cnt], cur_type);
                         INCRMENT_CAND_TOTAL_COUNT(cand_total_cnt);
