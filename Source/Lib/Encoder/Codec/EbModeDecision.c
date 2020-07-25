@@ -4910,20 +4910,21 @@ void inject_predictive_me_candidates(
             uint8_t list_idx_0 = get_list_idx(rf[0]);
             uint8_t list_idx_1 = get_list_idx(rf[1]);
 
-            if (context_ptr->valid_refined_mv[REF_LIST_0][ref_idx_0] &&
-                context_ptr->valid_refined_mv[REF_LIST_1][ref_idx_1]) {
+            if (context_ptr->valid_refined_mv[list_idx_0][ref_idx_0] &&
+                context_ptr->valid_refined_mv[list_idx_1][ref_idx_1]) {
+
                 int16_t to_inject_mv_x_l0 =
-                    context_ptr->best_spatial_pred_mv[REF_LIST_0][ref_idx_0][0];
+                    context_ptr->best_spatial_pred_mv[list_idx_0][ref_idx_0][0];
                 int16_t to_inject_mv_y_l0 =
-                    context_ptr->best_spatial_pred_mv[REF_LIST_0][ref_idx_0][1];
+                    context_ptr->best_spatial_pred_mv[list_idx_0][ref_idx_0][1];
                 int16_t to_inject_mv_x_l1 =
-                    context_ptr->best_spatial_pred_mv[REF_LIST_1][ref_idx_1][0];
+                    context_ptr->best_spatial_pred_mv[list_idx_1][ref_idx_1][0];
                 int16_t to_inject_mv_y_l1 =
-                    context_ptr->best_spatial_pred_mv[REF_LIST_1][ref_idx_1][1];
+                    context_ptr->best_spatial_pred_mv[list_idx_1][ref_idx_1][1];
 
                 MvReferenceFrame rf[2];
-                rf[0]                      = svt_get_ref_frame_type(REF_LIST_0, ref_idx_0);
-                rf[1]                      = svt_get_ref_frame_type(REF_LIST_1, ref_idx_1);
+                rf[0]                      = svt_get_ref_frame_type(list_idx_0 , ref_idx_0);
+                rf[1]                      = svt_get_ref_frame_type(list_idx_1 , ref_idx_1);
                 uint8_t to_inject_ref_type = av1_ref_frame_type(rf);
                 if (context_ptr->injected_mv_count_bipred == 0 ||
                     mrp_is_already_injected_mv_bipred(context_ptr,
@@ -4966,11 +4967,11 @@ void inject_predictive_me_candidates(
                         cand_array[cand_total_cnt].motion_mode             = SIMPLE_TRANSLATION;
                         cand_array[cand_total_cnt].is_compound             = 1;
                         cand_array[cand_total_cnt].is_interintra_used      = 0;
-                        cand_array[cand_total_cnt].prediction_direction[0] = (EbPredDirection)2;
+                        cand_array[cand_total_cnt].prediction_direction[0] = BI_PRED;
 
                         MvReferenceFrame rf[2];
-                        rf[0] = svt_get_ref_frame_type(REF_LIST_0, ref_idx_0);
-                        rf[1] = svt_get_ref_frame_type(REF_LIST_1, ref_idx_1);
+                        rf[0] = svt_get_ref_frame_type(list_idx_0, ref_idx_0);
+                        rf[1] = svt_get_ref_frame_type(list_idx_1, ref_idx_1);
                         cand_array[cand_total_cnt].ref_frame_type     = av1_ref_frame_type(rf);
                         cand_array[cand_total_cnt].ref_frame_index_l0 = ref_idx_0;
                         cand_array[cand_total_cnt].ref_frame_index_l1 = ref_idx_1;
@@ -4990,13 +4991,13 @@ void inject_predictive_me_candidates(
                                                 cand_array[cand_total_cnt].motion_vector_yl1,
                                                 &cand_array[cand_total_cnt].drl_index,
                                                 best_pred_mv);
-                        cand_array[cand_total_cnt].motion_vector_pred_x[REF_LIST_0] =
+                        cand_array[cand_total_cnt].motion_vector_pred_x[list_idx_0] =
                             best_pred_mv[0].as_mv.col;
-                        cand_array[cand_total_cnt].motion_vector_pred_y[REF_LIST_0] =
+                        cand_array[cand_total_cnt].motion_vector_pred_y[list_idx_0] =
                             best_pred_mv[0].as_mv.row;
-                        cand_array[cand_total_cnt].motion_vector_pred_x[REF_LIST_1] =
+                        cand_array[cand_total_cnt].motion_vector_pred_x[list_idx_1] =
                             best_pred_mv[1].as_mv.col;
-                        cand_array[cand_total_cnt].motion_vector_pred_y[REF_LIST_1] =
+                        cand_array[cand_total_cnt].motion_vector_pred_y[list_idx_1] =
                             best_pred_mv[1].as_mv.row;
 
                         //MVP REFINE
